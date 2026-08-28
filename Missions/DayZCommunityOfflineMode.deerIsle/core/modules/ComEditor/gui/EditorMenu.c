@@ -1,7 +1,8 @@
 class EditorMenu extends UIScriptedMenu 
 {
+    static const int MENU_ID = 133742;
 
-	protected ButtonWidget m_ObjectButton;
+    protected ButtonWidget m_ObjectButton;
 	protected ButtonWidget m_PositionButton;
 	protected ButtonWidget m_WeatherButton;
 	protected ButtonWidget m_GameButton;
@@ -17,11 +18,12 @@ class EditorMenu extends UIScriptedMenu
 
 	void EditorMenu()
 	{
-	    SetID( 133742 );
+	    SetID(MENU_ID);
 	}
-	
-	void ~EditorMenu()
-	{
+
+    override int GetID()	
+    {
+		return MENU_ID;
 	}
 	
 	override Widget Init()
@@ -47,22 +49,18 @@ class EditorMenu extends UIScriptedMenu
         return layoutRoot;
 	}
 
-	override bool UseMouse() 
-	{
-		return false;
-	}
-
-	override bool UseKeyboard() 
-	{
-		return false;
-	}
-
-    override void OnShow()
+    override void LockControls()
     {
-        super.OnShow();
+        super.LockControls();
 
-        GetGame().GetInput().ChangeGameFocus( 1 );
-        GetGame().GetUIManager().ShowUICursor( true );
+        GetGame().GetInput().ChangeGameFocus(1);
+    }
+
+    override void UnlockControls()
+    {
+        super.UnlockControls();
+
+        GetGame().GetInput().ChangeGameFocus(-1);
     }
 
     override void OnHide()
@@ -71,14 +69,11 @@ class EditorMenu extends UIScriptedMenu
 
         ObjectEditor.Cast( COM_GetModuleManager().GetModule( ObjectEditor )).EditorState( false );
 
-        GetGame().GetInput().ResetGameFocus();
-
         if ( !CameraTool.Cast(COM_GetModuleManager().GetModule(CameraTool)).IsUsingCamera() ) 
         {
 			COM_GetPB().GetInputController().OverrideMovementSpeed( false, 0 );
         }
         
-
         CameraSettings.CAMERA_ROT.Show( false );
         CameraSettings.CAMERA_PHI.Show( false );
     }
@@ -263,4 +258,3 @@ class EditorMenu extends UIScriptedMenu
 		}
 	}
 }
-
