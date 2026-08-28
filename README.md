@@ -1,11 +1,16 @@
-# DayZCommunityOfflineMode DeerIsle Edition 1.8
-# (MAP Version: 4.5)
-# This version is the Mission Files for DeerIsle 4.5 
-# DayZ Version 1.14
+# DayZCommunityOfflineMode DeerIsle Edition
+
+Mission files for running DayZ Community Offline Mode on the DeerIsle map.
+
+**Target:** DeerIsle **5.9** (stable) and the DeerIsle **experimental** branch, on current DayZ.
+
+> **Work in progress:** the mission files are being updated for DeerIsle 5.9 / experimental and are not yet confirmed working on them. The last version known to work is 1.8 (DeerIsle 4.5, DayZ 1.14). Expect breakage until this notice is removed.
 
 
 **Thank you to Arkensor for his Mod DayZCommunityOffline Mode**
 **For without his Mod this would not exsit**  
+
+> This is a maintained fork of [CypherMediaGIT/DayZCommunityOfflineMode-DeerIsle-Edition](https://github.com/CypherMediaGIT/DayZCommunityOfflineMode-DeerIsle-Edition), which itself is based on [Arkensor/DayZCommunityOfflineMode](https://github.com/Arkensor/DayZCommunityOfflineMode). The original repository is no longer updated; this fork contains modifications by [Jyrno42](https://github.com/Jyrno42) (see the git history for details).
 
 The DayZ Community Offline Mode DeerIsle Edition offers the ability, to explore the world of DayZ in a singleplayer environment on the DeerIsle Map. While this mode does not represent the actual DayZ gameplay it offers other possibilites for developers, content creators and player who do want to experiment around but not loose all their progress from online.
 
@@ -76,6 +81,7 @@ Locations are stored inside the script.log for now.
 You find your logfiles here: ```Press WINDOWS + R  -> Type in %localappdata%/DayZ -> Hit enter```. 
 
 # Developers
+* [Jyrno42](https://github.com/Jyrno42) - Fork maintainer
 * [Cypher](https://github.com/CypherMediaGIT)
 * [Arkensor](https://github.com/Arkensor)
 * [DannyDog](https://github.com/DannyDog)
@@ -90,3 +96,7 @@ You find your logfiles here: ```Press WINDOWS + R  -> Type in %localappdata%/Day
 * [wriley](https://github.com/wriley) - Code snippets beards
 * [PR9INICHEK](https://github.com/PR9INICHEK) - Object spawner additions
 
+# License
+This project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/) license, the same license as the original works it is derived from. See [LICENSE](LICENSE) for the full text and copyright notices.
+
+Copyright Paul-Eric Lange (Arkensor) 2018, Copyright Cypher 2019, Copyright Jürno Ader (Jyrno42) 2023-2026.
