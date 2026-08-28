@@ -1,0 +1,14 @@
+{
+  "name": "experimental",
+  "description": "DeerIsle 6.1 experimental (Steam Workshop 'DeerIsle Official (Experimental - Dev Build)', id 1750506510)",
+  "mission_dir": "DayZCommunityOfflineModeExp.deerisle",
+  "upstream": {
+    "repo": "johnmclane666/Deerisle-6.0-Experimental",
+    "ref": "7b06cca04170a2231f4a59335459b4927a41949a",
+    "path": "empty.deerisle"
+  },
+  "mods": [
+    "!Workshop\\@DeerIsle Official (Experimental - Dev Build)",
+    "!Workshop\\@CF"
+  ]
+}

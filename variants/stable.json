@@ -1,0 +1,14 @@
+{
+  "name": "stable",
+  "description": "DeerIsle 5.9 (Steam Workshop stable build)",
+  "mission_dir": "DayZCommunityOfflineMode.deerisle",
+  "upstream": {
+    "repo": "johnmclane666/Deerisle-Stable",
+    "ref": "2936ad2d930b62e9142aa8b3f4bcae2a42451d6a",
+    "path": "V5.9/empty.deerisle"
+  },
+  "mods": [
+    "!Workshop\\@DeerIsle",
+    "!Workshop\\@CF"
+  ]
+}

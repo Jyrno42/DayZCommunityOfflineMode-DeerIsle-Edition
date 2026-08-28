@@ -1,102 +1,133 @@
-# DayZCommunityOfflineMode DeerIsle Edition
+# DayZ Community Offline Mode - DeerIsle Edition
 
-Mission files for running DayZ Community Offline Mode on the DeerIsle map.
+Play DayZ on the [DeerIsle](https://steamcommunity.com/sharedfiles/filedetails/?id=1602372402) map (stable) or its [experimental 6.1 dev build](https://steamcommunity.com/sharedfiles/filedetails/?id=1750506510) offline, in single player. You get a free camera, teleporting, item and object spawning, an object editor and infinite ammo. This is not normal DayZ gameplay. It is meant for looking around the map, testing things and building, without touching your online progress.
 
-**Target:** DeerIsle **5.9** (stable) and the DeerIsle **experimental** branch, on current DayZ.
+Supported map versions:
 
-> **Work in progress:** the mission files are being updated for DeerIsle 5.9 / experimental and are not yet confirmed working on them. The last version known to work is 1.8 (DeerIsle 4.5, DayZ 1.14). Expect breakage until this notice is removed.
+| Download | DeerIsle version | Workshop item |
+|---|---|---|
+| `DayZCommunityOfflineMode-DeerIsle-stable.zip` | 5.9 (stable) | [DeerIsle](https://steamcommunity.com/sharedfiles/filedetails/?id=1602372402) |
+| `DayZCommunityOfflineMode-DeerIsle-experimental.zip` | 6.1 (experimental) | [DeerIsle Official (Experimental - Dev Build)](https://steamcommunity.com/sharedfiles/filedetails/?id=1750506510) |
 
+Both are tested on DayZ 1.29. Get them from the [Releases](https://github.com/Jyrno42/DayZCommunityOfflineMode-DeerIsle-Edition/releases) page.
 
-**Thank you to Arkensor for his Mod DayZCommunityOffline Mode**
-**For without his Mod this would not exsit**  
+This is a maintained fork of [CypherMediaGIT/DayZCommunityOfflineMode-DeerIsle-Edition](https://github.com/CypherMediaGIT/DayZCommunityOfflineMode-DeerIsle-Edition), which is based on Arkensor's [DayZCommunityOfflineMode](https://github.com/Arkensor/DayZCommunityOfflineMode). Neither of those is updated any more, so this fork keeps things working with current DeerIsle and DayZ versions.
 
-> This is a maintained fork of [CypherMediaGIT/DayZCommunityOfflineMode-DeerIsle-Edition](https://github.com/CypherMediaGIT/DayZCommunityOfflineMode-DeerIsle-Edition), which itself is based on [Arkensor/DayZCommunityOfflineMode](https://github.com/Arkensor/DayZCommunityOfflineMode). The original repository is no longer updated; this fork contains modifications by [Jyrno42](https://github.com/Jyrno42) (see the git history for details).
+## Installation
 
-The DayZ Community Offline Mode DeerIsle Edition offers the ability, to explore the world of DayZ in a singleplayer environment on the DeerIsle Map. While this mode does not represent the actual DayZ gameplay it offers other possibilites for developers, content creators and player who do want to experiment around but not loose all their progress from online.
+1. On the Steam Workshop, subscribe to the DeerIsle map you want (see the table above) and to [Community Framework (CF)](https://steamcommunity.com/sharedfiles/filedetails/?id=1559212036), which DeerIsle requires. Start DayZ once through the official launcher with those mods enabled so that Steam downloads them into `DayZ\!Workshop\`.
+2. Download the matching zip from [Releases](https://github.com/Jyrno42/DayZCommunityOfflineMode-DeerIsle-Edition/releases).
+3. Extract it into the `Missions` folder of your DayZ install, for example `C:\Program Files (x86)\Steam\steamapps\common\DayZ\Missions`. This gives you `Missions\DayZCommunityOfflineMode.deerisle` (stable) or `Missions\DayZCommunityOfflineModeExp.deerisle` (experimental). The two can be installed side by side.
+4. Run `DayZCOfflineMDeerIsle.bat` inside the mission folder. It starts the game straight into the offline mission with the right mods loaded. Note that it closes any DayZ that is already running and deletes the previous session's `storage_-1` folder, so every start is a fresh world.
 
-# Important Warning
+Even though this is not directly bannable by BattlEye, just to make sure: rename your `Battleye` folder to `Battleye.disabled`, and rename `DayZ_BE.exe` to `DayZ_BE.exe.disabled`.
 
-You Must Have ```DeerIsle ``` Downloaded and Installed from the steam workshop to play this Mod .. The contents of deerIsle Mod folder that you need to play DeerIsle is not included with this download.
-To Download DeerIsle please visit the steam store [Here](https://steamcommunity.com/sharedfiles/filedetails/?id=1602372402)
+To uninstall, delete the mission folder(s) and restore any renamed BattlEye files.
 
-# Info for server owners & mappers
-There is now a wiki page available on how to use the community offline mode to spawn map objects on your server or mission you are working on: [Add custom objects to your server or mission](https://github.com/Arkensor/DayZCommunityOfflineMode/wiki/Add-custom-objects-to-your-server-or-mission)
+## Controls
 
-# Saving and Loading of Custom Buildings
-After you placed down all objects you want to add, press ```SAVE``` in the Object Info panel. You can do this at any given time to ensure you don't loose your progress. This will be saved to a file located at C:\Users\YOURNAME\Documents\DayZ Labled as COMObjectEditorDeerIsleSave.json
-To export the objects simply press the ```EXPORT``` button. Now all placed objects will be exported and the code you need will be copied to your clipboard, which you can now paste into your .c File.
+| Key | Action |
+|---|---|
+| Y (Z on QWERTZ) | Open the COM toolbar menu |
+| X | Toggle auto-jog / walk / run |
+| Shift + X | Auto-run (X again to stop) |
+| Ctrl + X | Auto-walk (X again to stop) |
+| End | Teleport to where you are looking |
+| O | Spawn a random infected |
+| Ctrl + O | Spawn a wolf (attacks players and infected) |
+| Shift + O | Spawn a random animal |
+| R | Reload and refill ammo (infinite ammo) |
+| P | Print your position to chat and to the script log |
+| B | Toggle debug monitor |
+| Insert | Toggle free camera (teleports you to the camera position when turned off) |
 
-# Installation:
-To Download ```DeerIsle``` please visit the steam store [Here](https://steamcommunity.com/sharedfiles/filedetails/?id=1602372402) and click on Subscribe and wait for steam to download the Workshop content, Once installed Run DayZ via Steam by clicking play on the DayZ page from within your game libary, when the Steam DayZ Launcher screen shows, Click on Mods on the menu to the left, Find ```DeerIsle``` in your mods List and click the drop down box arrow to the right of the DeerIsle line, Click the 3 dotted line to ```"Display More Options"``` and select "Open Folder in Windows Explorer", Click "I understand" in the next window, now copy ```@DeerIsle``` folder, press up one level in your current folder and paste the ```@DeerIsle``` into the DayZ folder that you should now be in ```C:\Program Files (x86)\Steam\steamapps\common\DayZ```
+## Object editor
 
+Open it from the toolbar menu.
 
-Download [This](https://github.com/CypherMediaGIT/DayZCommunityOfflineMode-DeerIsle-Edition/releases/download/1.8/DayZCommunityOfflineMode.deerisle.zip) zip archive.  
-Make sure you are on the latest `STABLE` or `EXPERIMENTAL` version of the game.
+* Click an object to select it. Click and drag to move it. Click on nothing to deselect.
+* Middle click snaps the selected object to the ground (not always exact).
+* Spawn new objects with the object spawner in the toolbar.
+* Values in the object editor panel can be typed in, or changed with the scroll wheel while hovering over them.
+* `SAVE` in the Object Info panel writes your placed objects to `Documents\DayZ\COMObjectEditorSaveDeerIsle.json`. You can do this at any time so you don't lose your progress.
+* `EXPORT` copies the placed objects as script code to the clipboard, which you can paste into the `init.c` of a server or another mission. Arkensor's wiki page covers this: [Add custom objects to your server or mission](https://github.com/Arkensor/DayZCommunityOfflineMode/wiki/Add-custom-objects-to-your-server-or-mission).
 
-Unpack and Place the ```DayZCommunityOfflineMode.deerIsle``` folder inside your ```Missions``` folder in the DayZ game directory (```For example: C:\Program Files (x86)\Steam\steamapps\common\DayZ```).  
-Even though this is not directly bannable by Battleye, just to make sure: Rename your Battleye folder to Battleye.disabled, and rename the DayZ_BE.exe to DayZ_BE.exe.disabled.
+## Spawning, loot and infected
 
-Now you now start the script ```DayZ/Missions/DayZCommunityOfflineMode.deerIsle/DayZCOfflineMDeerIsle.bat``` to start the game. You will be loaded directly into the offline mode.  
-Or add the following start parameter to your game: ```-mission=.\Missions\DayZCommunityOfflineMode.deerIsle```
+* You spawn with a basic loadout at one of the map's own fresh spawn locations (the ones in DeerIsle's `cfgplayerspawnpoints.xml`).
+* The "hive" that spawns loot and infected is enabled by default. Disabling it improves performance; see [Toggle loot and infected spawn](https://github.com/CypherMediaGIT/DayZCommunityOfflineMode-DeerIsle-Edition/wiki/Toggle-Loot-and-Infected-Spawn).
+* The location list in the teleport menu was last updated for DeerIsle 4.x, so some entries may be off on newer map versions. [dayz.ginfo.gg/deerIsle](https://dayz.ginfo.gg/deerIsle/) has a current map.
 
-To unstinstall this mod, simple delete all downloaded files, and rename your .disabled folders back to their original name.   
-You might delete your whole ```Missions``` folder and validate your game files via steam to get the original DayZ files back.
+## Log files
 
-# Controls:
-* Y (Z for QWERTZ-Keyboard) - Open the COM toolbar menu.
-* X - Toggle Autojog/walk/run
-* X + SHIFT - Enable Autorun (Just X to disable it again)
-* X + CTRL - Enable Autowalk (Just X to disable it again)
-* END - Teleport at the position you are looking at
-* O - Spawn a random infected (Zombies)
-* O + CTRL - Spawn a wolf (Agressive and will fight both players and infected)
-* O + SHIFT - Spawn a random animal
-* R - Reload the weapon and refill the ammo (Infinite ammo)
-* P - Display your current position in the chat and print it to your logfiles (See logfiles section for their location)
-* B - Toggle debug monitor
-* INSERT - Toggle free camera. This teleports your player to the position you looked at when turning it off
+Press `Win + R`, type `%localappdata%\DayZ` and hit Enter. `DayZ_x64_*.RPT` is the engine log, `script_*.log` the script log. Positions you print with `P` end up in the script log, so you can find them again later. When reporting a problem, attach the newest of both.
 
-# Object Editor Controls:  
-* Click objects to select them.  
-* Click and drag objects to move them.
-* Click on nothing to deselect the current object.
-* Middle Click to snap to ground (Might not be accurate)
-* Spawn in new items using the object spawner menu that can be found in the toolbar.
-* You can either enter values on the object editor gui or hover above the value with your mouse and use the scroll wheel to in-/decrease them.
+## Reporting problems
 
-# Teleportation
-* This Version of DayZCommunityOfflineMode DeerIsle Edition has had the Teleport locations updated to match all the loction found on the DeerIsle ISurvive Map
-* https://dayz.ginfo.gg/deerIsle/
-* This Vesion updates the spawn locations to include Temple Location
- 
-# Loot and infected spawn
-By default the "Hive" that is repsonsible for spawning loot and infected is **enabled**. If you want to prevent loot and infected from spawning you need to follow this guide: [Toggle loot and infected spawn](https://github.com/CypherMediaGIT/DayZCommunityOfflineMode-DeerIsle-Edition/wiki/Toggle-Loot-and-Infected-Spawn)  
-> Disabling the hive increases the game performace.
+Open an issue in the [issue tracker](https://github.com/Jyrno42/DayZCommunityOfflineMode-DeerIsle-Edition/issues). Mention which zip you use (stable or experimental) and your DayZ version, and attach the log files described above.
 
-# Logfiles:
-In case you want to report errors to us or the offical dayz dev team, you might need logfile info.
-We also save the positions you printed ingame in it so that you might revisit them later on by saving them in some textfile.
-Locations are stored inside the script.log for now.
+---
 
-You find your logfiles here: ```Press WINDOWS + R  -> Type in %localappdata%/DayZ -> Hit enter```. 
+## For developers
 
-# Developers
-* [Jyrno42](https://github.com/Jyrno42) - Fork maintainer
-* [Cypher](https://github.com/CypherMediaGIT)
-* [Arkensor](https://github.com/Arkensor)
-* [DannyDog](https://github.com/DannyDog)
-* [Jacob_Mango](https://github.com/Jacob-Mango)
+### Repository layout
 
-# Contributors:
-* [Chubby The Gamer](https://github.com/ChubbyTheGamer) - Custom Objects sinking fix on reboots
-* [gallexme](https://github.com/gallexme) - Suggestion for the mission based version
-* [DuhOneZ](https://twitter.com/DuhOneZ) - Code snippets
-* [Watchman](https://twitter.com/watchman113) - Documentation
-* [n8m4re](https://github.com/n8m4re) - Code: SaveManager
-* [wriley](https://github.com/wriley) - Code snippets beards
-* [PR9INICHEK](https://github.com/PR9INICHEK) - Object spawner additions
+```
+com/                 Community Offline Mode scripts (core/, init.c, config.cpp)
+variants/<name>.json Where the DeerIsle mission files come from, mission folder name, -mod list
+overrides/<name>/    Files copied over the mission for one variant (optional)
+build.py             Assembles and zips a mission
+.github/workflows/   CI: builds every variant, publishes zips on v* tags
+```
 
-# License
-This project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/) license, the same license as the original works it is derived from. See [LICENSE](LICENSE) for the full text and copyright notices.
+The DeerIsle central economy files (`cfg*.xml`, `db/`, `env/`, `mapgroup*.xml`, `areaflags.map` and so on) are not stored in this repository. `build.py` downloads them from
+[johnmclane666/Deerisle-Stable](https://github.com/johnmclane666/Deerisle-Stable) (`V5.9/empty.deerisle`) and
+[johnmclane666/Deerisle-6.0-Experimental](https://github.com/johnmclane666/Deerisle-6.0-Experimental) (`empty.deerisle`)
+at the commit pinned in the variant file, then layers `com/` and `overrides/<variant>/` on top.
+
+The build also:
+
+* generates `core/SpawnPoints.c` (`COM_GetSpawnPoints()`) from the map's `cfgplayerspawnpoints.xml` `<fresh>` bubbles;
+* rewrites the absolute `#include` / layout paths in the scripts when a variant uses a different mission folder name (the sources are written against `DayZCommunityOfflineMode.deerisle`);
+* writes `DayZCOfflineMDeerIsle.bat` with the variant's `-mod=` list.
+
+### Building
+
+Requires Python 3 (standard library only).
+
+```
+python build.py                       # every variant -> dist/*.zip
+python build.py stable                # one variant
+python build.py --list                # show variants
+python build.py stable --install "C:\Program Files (x86)\Steam\steamapps\common\DayZ"
+                                      # build and copy into <DayZ>\Missions (keeps storage_-1)
+```
+
+Intermediate files go to `build/` and zips to `dist/`. Both are git-ignored. Downloaded upstream tarballs are cached in `build/upstream/`.
+
+### Updating to a new DeerIsle release
+
+1. Bump `upstream.ref` (and `path`, if the upstream repo moved things) in `variants/<variant>.json`.
+2. Build, `--install`, launch, and check `%localappdata%\DayZ\DayZ_x64_*.RPT` for `Virtual Machine Exception` after `Player connect enabled`.
+3. If a mission file needs to differ for that map version, put the replacement in `overrides/<variant>/` rather than editing `com/`.
+
+One thing to watch for: some DeerIsle mods only initialise their config in `MissionServer`, which never runs in offline mode. `JMC_ClassicWalk` does this and crashed on spawn until `CommunityOfflineClient.OnInit()` started calling its `GetClassicWalkConfig()` itself. If a new map version throws a "NULL pointer to instance" exception right after spawn, another mod probably does the same.
+
+### Releasing
+
+Push a `v*` tag. CI builds both zips and attaches them to a GitHub release.
+
+## Credits
+
+* [Jyrno42](https://github.com/Jyrno42) - fork maintainer
+* [Cypher](https://github.com/CypherMediaGIT) - DeerIsle edition
+* [Arkensor](https://github.com/Arkensor) - DayZ Community Offline Mode, without which this would not exist
+* [DannyDog](https://github.com/DannyDog), [Jacob_Mango](https://github.com/Jacob-Mango) - COM development
+* [johnmclane666](https://github.com/johnmclane666) - DeerIsle mission files
+* Contributors: [Chubby The Gamer](https://github.com/ChubbyTheGamer) (custom objects sinking fix), [gallexme](https://github.com/gallexme) (mission-based version), [DuhOneZ](https://twitter.com/DuhOneZ) (code snippets), [Watchman](https://twitter.com/watchman113) (documentation), [n8m4re](https://github.com/n8m4re) (SaveManager), [wriley](https://github.com/wriley) (beards), [PR9INICHEK](https://github.com/PR9INICHEK) (object spawner additions)
+
+## License
+
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/), the same license as the works it is derived from. See [LICENSE](LICENSE) for the full text.
 
 Copyright Paul-Eric Lange (Arkensor) 2018, Copyright Cypher 2019, Copyright Jürno Ader (Jyrno42) 2023-2026.
