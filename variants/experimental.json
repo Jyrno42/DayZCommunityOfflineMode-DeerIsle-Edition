@@ -10,5 +10,24 @@
   "mods": [
     "!Workshop\\@DeerIsle Official (Experimental - Dev Build)",
     "!Workshop\\@CF"
-  ]
+  ],
+  "spawn_sets": [
+    {
+      "name": "Spawn dive set",
+      "items": [
+        "ADM_Divinghelmet",
+        "ADM_Divingsuit",
+        "ADM_Divingtank",
+        "ADM_Flippers",
+        "jmc_GPSReceiver/Battery9V"
+      ]
+    }
+  ],
+  "json_patches": {
+    "cfggameplay.json": {
+      "WorldsData": {
+        "lightingConfig": 1
+      }
+    }
+  }
 }

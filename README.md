@@ -13,6 +13,17 @@ Both are tested on DayZ 1.29. Get them from the [Releases](https://github.com/Jy
 
 This is a maintained fork of [CypherMediaGIT/DayZCommunityOfflineMode-DeerIsle-Edition](https://github.com/CypherMediaGIT/DayZCommunityOfflineMode-DeerIsle-Edition), which is based on Arkensor's [DayZCommunityOfflineMode](https://github.com/Arkensor/DayZCommunityOfflineMode). Neither of those is updated any more, so this fork keeps things working with current DeerIsle and DayZ versions.
 
+## Notes about 6.1 experimental
+
+The experimental build is a dev branch that changes often, so expect things to break between DeerIsle updates. State as of 29 August 2026, tested in single player:
+
+* Works: KMUC (door, alarm, staff, flooding), the carrier and its green card door with loot, punchcards and the Paris Island conversion devices, the ice temple (levers, door and hammer, Smokey), Smokey from the grenade, diving (gear, tank filling, crates and beacon), area trigger events and underground darkness, gas zones, the temple of gods bowl and the teleport into the endgame area, the KMUC door there.
+* Does not work: the endgame event itself. Its manager is written for a dedicated server with clients (player identities, effects and UI on the client side, scene changes by RPC), and keeping single-player patches for it up to date with the experimental branch is not sustainable. This is unlikely to change until the event settles down upstream.
+* DeerIsle's own nights are moonlit; this mission sets `lightingConfig` to 1 for dark nights.
+* Some mines have no darkness because the map's `cfgundergroundtriggers.json` has no trigger there.
+
+The detailed list is in [Checklist-6.1.md](Checklist-6.1.md).
+
 ## Installation
 
 1. On the Steam Workshop, subscribe to the DeerIsle map you want (see the table above) and to [Community Framework (CF)](https://steamcommunity.com/sharedfiles/filedetails/?id=1559212036), which DeerIsle requires. Start DayZ once through the official launcher with those mods enabled so that Steam downloads them into `DayZ\!Workshop\`.
@@ -55,12 +66,13 @@ Open it from the toolbar menu.
 ## Spawning, loot and infected
 
 * You spawn with a basic loadout at one of the map's own fresh spawn locations (the ones in DeerIsle's `cfgplayerspawnpoints.xml`).
+* After dying (or any time from the pause menu), `Respawn` gives you a new character in the same world, so your body and gear stay where they were. `Restart` reloads the whole mission and asks for confirmation first, because everything since launch is lost.
 * The "hive" that spawns loot and infected is enabled by default. Disabling it improves performance; see [Toggle loot and infected spawn](https://github.com/CypherMediaGIT/DayZCommunityOfflineMode-DeerIsle-Edition/wiki/Toggle-Loot-and-Infected-Spawn).
 * The location list in the teleport menu was last updated for DeerIsle 4.x, so some entries may be off on newer map versions. [dayz.ginfo.gg/deerIsle](https://dayz.ginfo.gg/deerIsle/) has a current map.
 
 ## Log files
 
-Press `Win + R`, type `%localappdata%\DayZ` and hit Enter. `DayZ_x64_*.RPT` is the engine log, `script_*.log` the script log. Positions you print with `P` end up in the script log, so you can find them again later. When reporting a problem, attach the newest of both.
+They are in the `profiles` folder inside the mission folder, for example `Missions\DayZCommunityOfflineMode.deerisle\profiles`. `DayZ_x64_*.RPT` is the engine log, `script_*.log` the script log. Positions you print with `P` end up in the script log, so you can find them again later. When reporting a problem, attach the newest of both.
 
 ## Reporting problems
 
@@ -76,6 +88,7 @@ Open an issue in the [issue tracker](https://github.com/Jyrno42/DayZCommunityOff
 com/                 Community Offline Mode scripts (core/, init.c, config.cpp)
 variants/<name>.json Where the DeerIsle mission files come from, mission folder name, -mod list
 overrides/<name>/    Files copied over the mission for one variant (optional)
+mods/<name>/<Mod>/   Companion mod sources, packed into <mission>/mod/addons/<Mod>.pbo
 build.py             Assembles and zips a mission
 .github/workflows/   CI: builds every variant, publishes zips on v* tags
 ```
@@ -87,9 +100,11 @@ at the commit pinned in the variant file, then layers `com/` and `overrides/<var
 
 The build also:
 
+* applies the variant's `json_patches` to the mission's JSON files (experimental sets `lightingConfig` to 1 for dark nights) and generates `core/SpawnSets.c` from its `spawn_sets` (the "Spawn dive set" entry in the COM script menu);
 * generates `core/SpawnPoints.c` (`COM_GetSpawnPoints()`) from the map's `cfgplayerspawnpoints.xml` `<fresh>` bubbles;
 * rewrites the absolute `#include` / layout paths in the scripts when a variant uses a different mission folder name (the sources are written against `DayZCommunityOfflineMode.deerisle`);
-* writes `DayZCOfflineMDeerIsle.bat` with the variant's `-mod=` list.
+* packs every folder under `mods/<variant>/` into a PBO in `<mission>/mod/addons/` and appends that mod folder to the `-mod=` list. Mission scripts only see the base game's script modules, so anything that has to patch a map mod (`modded class` on its classes) lives here. On experimental, `COM_DeerIsle` stops `DeerIsleBase` from placing its objects twice, keeps Smokey's physics body awake so it moves, plays the security-door alarm, makes the diving mod, the crate beacon and in-water fall damage work in single player, and drops the identity print in `MarkZoneVisited`. Most of those are the same bug: the mod does its server-side work only when `IsDedicatedServer()` is true and relies on net-sync to reach the client, so in single player neither side runs;
+* writes `DayZCOfflineMDeerIsle.bat` with the variant's `-mod=` list. The launcher also passes `-profiles=<mission>\profiles`, so each variant keeps its own mod state (`Deerisle\*.json`), game settings and logs inside its mission folder; on the first start it copies your video and control settings from `Documents\DayZ`.
 
 ### Building
 
@@ -108,10 +123,19 @@ Intermediate files go to `build/` and zips to `dist/`. Both are git-ignored. Dow
 ### Updating to a new DeerIsle release
 
 1. Bump `upstream.ref` (and `path`, if the upstream repo moved things) in `variants/<variant>.json`.
-2. Build, `--install`, launch, and check `%localappdata%\DayZ\DayZ_x64_*.RPT` for `Virtual Machine Exception` after `Player connect enabled`.
+2. Build, `--install`, launch, and check `<mission>\profiles\DayZ_x64_*.RPT` for `Virtual Machine Exception` after `Player connect enabled`.
 3. If a mission file needs to differ for that map version, put the replacement in `overrides/<variant>/` rather than editing `com/`.
 
-One thing to watch for: some DeerIsle mods only initialise their config in `MissionServer`, which never runs in offline mode. `JMC_ClassicWalk` does this and crashed on spawn until `CommunityOfflineClient.OnInit()` started calling its `GetClassicWalkConfig()` itself. If a new map version throws a "NULL pointer to instance" exception right after spawn, another mod probably does the same.
+Offline mode runs as a `MissionGameplay`, but DeerIsle keeps most of its world logic (Smokey, KMUC flooding, temple cage, area trigger events, diving config, midnight events, and so on) in `modded class MissionServer`, which never runs in a plain `MissionGameplay`. The vanilla loaders for `cfggameplay.json`, underground darkness triggers and contaminated areas also only run there. So `CommunityOfflineClient.OnInit()` creates a `MissionServer` instance of its own and calls its `OnInit()` and `OnMissionStart()`; that runs every mod's server-side hooks without listing them one by one. Nothing else is forwarded to it (no `OnUpdate`, `OnEvent`, `InvokeOnConnect`), so hooks that need a `PlayerIdentity` or RPCs stay inactive, which is fine offline because the config globals are shared in one process anyway. A "NULL pointer to instance" on `GetIdentity()` in a mod's log print is the usual harmless side effect.
+
+### Local overrides
+
+Scripts you want only on your own machine (test hotkeys, debug helpers) go in `<DayZ>\COM_Local\<variant>\`, outside the mission folder, so reinstalling or updating the mission leaves them alone. Two optional parts:
+
+* `mission\init.c`: mission-level script. The launcher copies it over `core\LocalOverrides.c` on every start. It can only use base-game classes, like the rest of `com/`. If it defines `class COMLocal extends Module`, COM registers it as a module (keybinds, menus).
+* `mod\config.cpp` plus `mod\scripts\...`: a private companion mod, for anything that has to touch map-mod classes (`modded class` on DeerIsle or diving-mod classes). `python build.py <variant> --install <DayZ>` packs it into `COM_Local\<variant>\addons\COM_Local_<variant>.pbo`, and the launcher adds `COM_Local\<variant>` to `-mod=` while that folder exists. Re-run the install after editing these scripts. The PBO prefix is `COM_Local_<variant>`, so `files[]` in `config.cpp` must use paths like `COM_Local_<variant>/scripts/4_World`.
+
+Delete the `addons` folder (or the whole `COM_Local\<variant>` folder) to go back to the plain release.
 
 ### Releasing
 

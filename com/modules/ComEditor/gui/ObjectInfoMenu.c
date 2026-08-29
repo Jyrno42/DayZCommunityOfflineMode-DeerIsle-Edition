@@ -26,7 +26,7 @@ class ObjectInfoMenu extends PopupMenu
 	{
 		listBox.ClearItems();
 
-		ref array<ref Object> objects = ((ObjectEditor) COM_GetModuleManager().GetModule(ObjectEditor)).m_Objects;
+		ref array<Object> objects = ((ObjectEditor) COM_GetModuleManager().GetModule(ObjectEditor)).m_Objects;
 
 		foreach( Object obj : objects )
 		{
@@ -87,7 +87,7 @@ class ObjectInfoMenu extends PopupMenu
 		}
 		if ( w.GetName() == "object_editor_info_clear")
 		{
-			ref array< ref Object> objects = ((ObjectEditor) COM_GetModuleManager().GetModule(ObjectEditor)).m_Objects;
+			ref array<Object> objects = ((ObjectEditor) COM_GetModuleManager().GetModule(ObjectEditor)).m_Objects;
 
 			foreach( Object obj : objects )
 			{
