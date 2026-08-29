@@ -4,6 +4,11 @@ class CommunityOfflineClient extends MissionGameplay
 
     protected bool m_loaded;
 
+	// Runs the modded MissionServer hooks and the server-side loaders (cfggameplay,
+	// underground triggers, effect areas) that MissionGameplay only runs in DIAG builds.
+	// Only OnInit/OnMissionStart/OnMissionFinish are forwarded.
+	protected MissionServer m_ServerLogic;
+
 	void CommunityOfflineClient()
 	{
 	    m_loaded = false;
@@ -15,16 +20,26 @@ class CommunityOfflineClient extends MissionGameplay
 	{
 		super.OnInit();
 
-		// DeerIsle's JMC_ClassicWalk mod only initialises its config from MissionServer(),
-		// which never runs in offline mode. Without this, PlayerBase.CanSprint() dereferences
-		// a NULL g_ClassicWalkConfig and the game crashes as soon as the player spawns.
-		GetClassicWalkConfig();
+		SeedDeerIsleProfileDefaults();
+
+		// GetGame().GetMission() is still NULL in the constructor and mod constructors spawn items.
+		m_ServerLogic = new MissionServer();
+		// Yield defaults are already registered by this mission.
+		GetDayZGame().GetYieldDataInitInvoker().Remove( m_ServerLogic.InitWorldYieldDataDefaults );
+		m_ServerLogic.OnInit();
+
+		LoadCfgGameplay();
 
         InitHive();
 
         SetupWeather();
 
 		SpawnPlayer();
+
+		// Normally triggered by the cfggameplay sync RPC on connect.
+		PlayerBase player = COM_GetPB();
+		if ( player )
+			player.OnGameplayDataHandlerSync();
 
 		GetDayZGame().SetMissionPath( "$saves:CommunityOfflineMode\\" ); // CameraToolsMenu
 	}
@@ -33,12 +48,17 @@ class CommunityOfflineClient extends MissionGameplay
 	{
 		super.OnMissionStart();
 
+		m_ServerLogic.OnMissionStart();
+
         COM_GetModuleManager().OnInit();
 		COM_GetModuleManager().OnMissionStart();
 	}
 
 	override void OnMissionFinish()
 	{
+		m_ServerLogic.OnMissionFinish();
+		m_ServerLogic = null;
+
         COM_GetModuleManager().OnMissionFinish();
 
 		CloseAllMenus();
@@ -71,6 +91,51 @@ class CommunityOfflineClient extends MissionGameplay
             m_loaded = true;
             OnMissionLoaded();
         }
+	}
+
+	// MissionServer.OnInit() reads cfggameplay.json only with enableCfgGameplayFile in serverDZ.cfg.
+	static void LoadCfgGameplay()
+	{
+		string error;
+		if ( JsonFileLoader<CfgGameplayJson>.LoadFile( "$mission:cfggameplay.json", CfgGameplayHandler.m_Data, error ) )
+		{
+			CfgGameplayHandler.OnLoaded();
+			Print( "COM: loaded cfggameplay.json (lightingConfig " + CfgGameplayHandler.GetLightingConfig() + ")" );
+		}
+		else
+		{
+			Print( "COM: cfggameplay.json not loaded: " + error );
+		}
+	}
+
+	// DeerIsle mods create $profile:Deerisle/*.json with fresh-server defaults on first
+	// run. Seed single-player values before that; existing files are left alone.
+	// Plain text so this compiles without the mod.
+	static void SeedDeerIsleProfileDefaults()
+	{
+		if ( !FileExist( "$profile:Deerisle" ) )
+			MakeDirectory( "$profile:Deerisle" );
+
+		// Mod default is drained, refilling 2 h after the door opens.
+		// IsFlooded is the drain target: false = water at flood height.
+		if ( !FileExist( "$profile:Deerisle/KMUCFloodState.json" ) )
+		{
+			FileHandle file = OpenFile( "$profile:Deerisle/KMUCFloodState.json", FileMode.WRITE );
+			if ( file )
+			{
+				FPrintln( file, "{" );
+				FPrintln( file, "    \"INFO_DO_NOT_CHANGE\": \"ONLY change Enabled, DrainTime and FloodTime. Leave the rest as is!\"," );
+				FPrintln( file, "    \"KMUCWaterEnabled\": 1," );
+				FPrintln( file, "    \"DrainTimeMins\": 25.0," );
+				FPrintln( file, "    \"FloodTimeMins\": 45.0," );
+				FPrintln( file, "    \"IsFlooded\": 0," );
+				FPrintln( file, "    \"IsMoving\": 0," );
+				FPrintln( file, "    \"CurrentHeight\": 574.25" );
+				FPrintln( file, "}" );
+				CloseFile( file );
+				Print( "COM: seeded $profile:Deerisle/KMUCFloodState.json (KMUC flooded)" );
+			}
+		}
 	}
 
     void SpawnPlayer()
@@ -138,6 +203,26 @@ class CommunityOfflineClient extends MissionGameplay
             return new EditorMenu();
         }
 
+        if(id == MENU_INGAME)
+        {
+            UIScriptedMenu menu = new COMInGameMenu();
+            menu.SetID(id);
+            return menu;
+        }
+
         return super.CreateScriptedMenu(id);
     }
+
+	// New character in the running world; the old body stays.
+	void Respawn()
+	{
+		PlayerBase fresh = COM_CreateCustomDefaultCharacter();
+		if ( !fresh )
+			return;
+
+		GetGame().SelectPlayer( NULL, fresh );
+		GetGame().GetUIManager().CloseAll();
+		OnPlayerRespawned( fresh );
+		Continue();
+	}
 }

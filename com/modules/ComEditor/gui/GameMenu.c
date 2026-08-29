@@ -32,6 +32,13 @@ class GameMenu extends PopupMenu
 //		m_gameScriptList.AddItem( "Spawn Bus", 		 new Param1< string >( "SpawnBus" ), 	   0 );
 //		m_gameScriptList.AddItem( "Spawn Van",	     new Param1< string >( "SpawnVan" ), 	   0 );
 
+		// From variants/<variant>.json via generated core/SpawnSets.c
+		TStringArray spawnSetNames = COM_GetSpawnSetNames();
+		for ( int s = 0; s < spawnSetNames.Count(); s++ )
+		{
+			m_gameScriptList.AddItem( spawnSetNames[s], new Param2< string, int >( "SpawnSet", s ), 0 );
+		}
+
 		CheckBoxWidget checkBoxGodmode = CheckBoxWidget.Cast(GetGame().GetWorkspace().CreateWidgets( checkboxLayout, m_checkboxPanel ));
 		checkBoxGodmode.SetName( "Godmode" );
 		checkBoxGodmode.SetText( "Godmode" );
@@ -116,16 +123,24 @@ class GameMenu extends PopupMenu
 
 		string param;
 		Param1<string> param1;
+		Param2<string, int> param2;
 
-		if ( w == m_gameScriptButton ) 
+		if ( w == m_gameScriptButton )
 		{
 			int selectRow = m_gameScriptList.GetSelectedRow();
 
 			if ( selectRow == -1 ) return false;
 
+			m_gameScriptList.GetItemData( selectRow, 0, param2 );
+			if ( param2 && param2.param1 == "SpawnSet" )
+			{
+				SpawnSet( param2.param2 );
+				return false;
+			}
+
 			m_gameScriptList.GetItemData( selectRow, 0, param1 );
 
-			if ( param1 ) 
+			if ( param1 )
 			{
 				GetGame().GameScript.CallFunction( this , param1.param1 , NULL, 0 );
 			}
@@ -144,7 +159,45 @@ class GameMenu extends PopupMenu
 		return false;
 	}
 
-	void SpawnHatchback() 
+	// "Class/Attachment/..." creates attachments inside the item; quantity items spawn full.
+	void SpawnSet( int index )
+	{
+		PlayerBase player = COM_GetPB();
+		if ( !player ) return;
+
+		vector pos = player.GetPosition();
+		TStringArray items = COM_GetSpawnSetItems( index );
+
+		foreach ( string entry : items )
+		{
+			TStringArray parts = new TStringArray;
+			entry.Split( "/", parts );
+			if ( parts.Count() == 0 ) continue;
+
+			vector at = pos + Vector( Math.RandomFloatInclusive( -0.6, 0.6 ), 0, Math.RandomFloatInclusive( -0.6, 0.6 ) );
+			EntityAI item = EntityAI.Cast( GetGame().CreateObjectEx( parts[0], at, ECE_PLACE_ON_SURFACE ) );
+			if ( !item )
+			{
+				COM_Message( "Could not spawn " + parts[0] );
+				continue;
+			}
+
+			for ( int i = 1; i < parts.Count(); i++ )
+			{
+				item.GetInventory().CreateAttachment( parts[i] );
+			}
+
+			ItemBase itemBase = ItemBase.Cast( item );
+			if ( itemBase && itemBase.HasQuantity() )
+			{
+				itemBase.SetQuantity( itemBase.GetQuantityMax() );
+			}
+		}
+
+		COM_Message( "Spawned " + COM_GetSpawnSetNames()[index] );
+	}
+
+	void SpawnHatchback()
 	{
 		TStringArray attArr = {
 		"HeadlightH7", "HeadlightH7",
