@@ -216,11 +216,16 @@ class CommunityOfflineClient extends MissionGameplay
 	// New character in the running world; the old body stays.
 	void Respawn()
 	{
+		PlayerBase old = COM_GetPB();
 		PlayerBase fresh = COM_CreateCustomDefaultCharacter();
 		if ( !fresh )
 			return;
 
 		GetGame().SelectPlayer( NULL, fresh );
+
+		// A live old character keeps reacting to input.
+		if ( old && old.IsAlive() )
+			old.SetHealth( "", "", 0 );
 		GetGame().GetUIManager().CloseAll();
 		OnPlayerRespawned( fresh );
 		Continue();

@@ -36,13 +36,16 @@
 - [x] Boat ticket works
   - [x] spawned boat works
 - [x] Diving tank ticket works
+- [ ] blood sacrifice teleporter works to temple
 
-- [ ] staff can be lit (anti cheese checks still in play)
-- [ ] lit staff can be used to light temple of gods bowl and the water level lowers when bowl gets lit
-- [ ] teleport to EG area from temple of gods works
-- [ ] kmuc door in EG are works
+- [x] staff can be lit (anti cheese checks still in play)
+- [x] lit staff can be used to light temple of gods bowl and the water level lowers when bowl gets lit
+- [x] teleport to EG area from temple of gods works
+- [x] kmuc door in EG area works
 - [ ] punchcard can be used to open reactor room
-- [ ] lit staff can be used to start EG event
+- [ ] EG event
+
+The endgame does not work offline and probably will not until it settles down upstream. The endgame manager is written for a dedicated server with clients: it only counts players that have an identity, does its effects and UI in `IsClient()` branches, and drives scene changes with client-to-server RPCs. Making it run in single player means copying most of that client code into the companion mod and redoing it with every experimental update, which is not sustainable. Everything up to the teleport into the EG area works.
 
 
 ## Misc

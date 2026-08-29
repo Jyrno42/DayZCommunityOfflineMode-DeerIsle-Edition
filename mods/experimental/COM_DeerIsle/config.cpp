@@ -25,13 +25,18 @@ class CfgMods
 		version = "1.0";
 		extra = 0;
 		type = "mod";
-		dependencies[] = {"World"};
+		dependencies[] = {"World", "Mission"};
 		class defs
 		{
 			class worldScriptModule
 			{
 				value = "";
 				files[] = {"COM_DeerIsle/scripts/4_World"};
+			};
+			class missionScriptModule
+			{
+				value = "";
+				files[] = {"COM_DeerIsle/scripts/5_Mission"};
 			};
 		};
 	};
