@@ -13,6 +13,17 @@ Both are tested on DayZ 1.29. Get them from the [Releases](https://github.com/Jy
 
 This is a maintained fork of [CypherMediaGIT/DayZCommunityOfflineMode-DeerIsle-Edition](https://github.com/CypherMediaGIT/DayZCommunityOfflineMode-DeerIsle-Edition), which is based on Arkensor's [DayZCommunityOfflineMode](https://github.com/Arkensor/DayZCommunityOfflineMode). Neither of those is updated any more, so this fork keeps things working with current DeerIsle and DayZ versions.
 
+## Notes about 6.1 experimental
+
+The experimental build is a dev branch that changes often, so expect things to break between DeerIsle updates. State as of 29 August 2026, tested in single player:
+
+* Works: KMUC (door, alarm, staff, flooding), the carrier and its green card door with loot, punchcards and the Paris Island conversion devices, the ice temple (levers, door and hammer, Smokey), Smokey from the grenade, diving (gear, tank filling, crates and beacon), area trigger events and underground darkness, gas zones, the temple of gods bowl and the teleport into the endgame area, the KMUC door there.
+* Does not work: the endgame event itself. Its manager is written for a dedicated server with clients (player identities, effects and UI on the client side, scene changes by RPC), and keeping single-player patches for it up to date with the experimental branch is not sustainable. This is unlikely to change until the event settles down upstream.
+* DeerIsle's own nights are moonlit; this mission sets `lightingConfig` to 1 for dark nights.
+* Some mines have no darkness because the map's `cfgundergroundtriggers.json` has no trigger there.
+
+The detailed list is in [Checklist-6.1.md](Checklist-6.1.md).
+
 ## Installation
 
 1. On the Steam Workshop, subscribe to the DeerIsle map you want (see the table above) and to [Community Framework (CF)](https://steamcommunity.com/sharedfiles/filedetails/?id=1559212036), which DeerIsle requires. Start DayZ once through the official launcher with those mods enabled so that Steam downloads them into `DayZ\!Workshop\`.
