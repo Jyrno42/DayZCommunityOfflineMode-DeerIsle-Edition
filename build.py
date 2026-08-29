@@ -65,9 +65,19 @@ if not exist "profiles" (
     xcopy /E /I /Q /Y "%USERPROFILE%\\Documents\\DayZ\\Users" "profiles\\Users" > nul 2>&1
 )
 
+rem Local overrides from <DayZ>\\COM_Local\\{variant}: mission\\init.c -> core\\LocalOverrides.c, addons\\*.pbo -> -mod=
+set "LOCAL=..\\..\\COM_Local\\{variant}"
+if exist "%LOCAL%\\mission\\init.c" (
+    copy /Y "%LOCAL%\\mission\\init.c" "core\\LocalOverrides.c" > nul
+) else (
+    echo // no local overrides> "core\\LocalOverrides.c"
+)
+set "MODS={mods}"
+if exist "%LOCAL%\\addons" set "MODS=%MODS%;COM_Local\\{variant}"
+
 cd ../../
 
-start DayZ_x64.exe -mission=.\\Missions\\{mission_dir} "-profiles=.\\Missions\\{mission_dir}\\profiles" -nosplash -noPause -noBenchmark -filePatching -doLogs -scriptDebug=true "-mod={mods}"
+start DayZ_x64.exe -mission=.\\Missions\\{mission_dir} "-profiles=.\\Missions\\{mission_dir}\\profiles" -nosplash -noPause -noBenchmark -filePatching -doLogs -scriptDebug=true "-mod=%MODS%"
 """
 
 
@@ -277,8 +287,8 @@ def build_companion_mods(name: str, mission: Path) -> list[str]:
     return entries
 
 
-def write_launcher(mission: Path, mission_dir: str, mods: list[str]) -> None:
-    content = LAUNCHER_TEMPLATE.format(mission_dir=mission_dir, mods=";".join(mods))
+def write_launcher(mission: Path, mission_dir: str, mods: list[str], variant: str) -> None:
+    content = LAUNCHER_TEMPLATE.format(mission_dir=mission_dir, mods=";".join(mods), variant=variant)
     # Batch files want CRLF.
     (mission / LAUNCHER_NAME).write_bytes(content.replace("\n", "\r\n").encode("utf-8"))
 
@@ -289,6 +299,18 @@ def zip_mission(mission: Path, out: Path) -> None:
         for path in sorted(mission.rglob("*")):
             if path.is_file():
                 zf.write(path, f"{mission.name}/{path.relative_to(mission).as_posix()}")
+
+
+def pack_local_mod(install_root: Path, name: str) -> None:
+    """Pack <DayZ>/COM_Local/<variant>/mod/ into COM_Local/<variant>/addons/ (private, never shipped)."""
+    local = install_root / "COM_Local" / name
+    mod_src = local / "mod"
+    if not mod_src.is_dir():
+        return
+    prefix = f"COM_Local_{name}"
+    out = local / "addons" / f"{prefix}.pbo"
+    n = write_pbo(mod_src, out, prefix=prefix)
+    log(f"  local mod: {n} files -> {out}")
 
 
 def build(name: str, install_root: Path | None) -> Path:
@@ -325,7 +347,9 @@ def build(name: str, install_root: Path | None) -> Path:
     n = rewrite_mission_dir(mission, mission_dir)
     if n:
         log(f"  rewrote include paths in {n} script(s) -> {mission_dir}")
-    write_launcher(mission, mission_dir, variant["mods"] + mod_entries)
+    # Placeholder; the launcher replaces it from COM_Local.
+    (mission / "core" / "LocalOverrides.c").write_text("// no local overrides\n", encoding="utf-8", newline="\n")
+    write_launcher(mission, mission_dir, variant["mods"] + mod_entries, name)
 
     out = DIST_DIR / f"DayZCommunityOfflineMode-DeerIsle-{name}.zip"
     zip_mission(mission, out)
@@ -348,6 +372,7 @@ def build(name: str, install_root: Path | None) -> Path:
         except OSError as exc:
             sys.exit(f"cannot replace {target} (is DayZ still running?): {exc}")
         log(f"  installed to {target}")
+        pack_local_mod(install_root, name)
     return out
 
 

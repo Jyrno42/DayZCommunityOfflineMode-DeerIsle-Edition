@@ -63,6 +63,19 @@ class ModuleManager
         #ifdef MODULE_DEBUG_MONITOR
         RegisterModule( new ref CustomDebugMonitor );
         #endif
+
+        // Optional COMLocal module from core/LocalOverrides.c; looked up by name so it may be absent.
+        string localName = "COMLocal";
+        typename localType = localName.ToType();
+        if ( localType )
+        {
+            Module localModule = Module.Cast( localType.Spawn() );
+            if ( localModule )
+            {
+                Print( "COM: registering local module COMLocal" );
+                RegisterModule( localModule );
+            }
+        }
     }
 
     void ReloadSettings()

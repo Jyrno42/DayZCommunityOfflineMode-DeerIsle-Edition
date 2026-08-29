@@ -117,6 +117,15 @@ Intermediate files go to `build/` and zips to `dist/`. Both are git-ignored. Dow
 
 Offline mode runs as a `MissionGameplay`, but DeerIsle keeps most of its world logic (Smokey, KMUC flooding, temple cage, area trigger events, diving config, midnight events, and so on) in `modded class MissionServer`, which never runs in a plain `MissionGameplay`. The vanilla loaders for `cfggameplay.json`, underground darkness triggers and contaminated areas also only run there. So `CommunityOfflineClient.OnInit()` creates a `MissionServer` instance of its own and calls its `OnInit()` and `OnMissionStart()`; that runs every mod's server-side hooks without listing them one by one. Nothing else is forwarded to it (no `OnUpdate`, `OnEvent`, `InvokeOnConnect`), so hooks that need a `PlayerIdentity` or RPCs stay inactive, which is fine offline because the config globals are shared in one process anyway. A "NULL pointer to instance" on `GetIdentity()` in a mod's log print is the usual harmless side effect.
 
+### Local overrides
+
+Scripts you want only on your own machine (test hotkeys, debug helpers) go in `<DayZ>\COM_Local\<variant>\`, outside the mission folder, so reinstalling or updating the mission leaves them alone. Two optional parts:
+
+* `mission\init.c`: mission-level script. The launcher copies it over `core\LocalOverrides.c` on every start. It can only use base-game classes, like the rest of `com/`. If it defines `class COMLocal extends Module`, COM registers it as a module (keybinds, menus).
+* `mod\config.cpp` plus `mod\scripts\...`: a private companion mod, for anything that has to touch map-mod classes (`modded class` on DeerIsle or diving-mod classes). `python build.py <variant> --install <DayZ>` packs it into `COM_Local\<variant>\addons\COM_Local_<variant>.pbo`, and the launcher adds `COM_Local\<variant>` to `-mod=` while that folder exists. Re-run the install after editing these scripts. The PBO prefix is `COM_Local_<variant>`, so `files[]` in `config.cpp` must use paths like `COM_Local_<variant>/scripts/4_World`.
+
+Delete the `addons` folder (or the whole `COM_Local\<variant>` folder) to go back to the plain release.
+
 ### Releasing
 
 Push a `v*` tag. CI builds both zips and attaches them to a GitHub release.
